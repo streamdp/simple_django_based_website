@@ -8,6 +8,7 @@
            <h6>{{ q.rating }}</h6>
            <h6>{{ q.author }}</h6>
            <p>{{ q.text }}</p>
+           <a href='/question/{{ q.id  }}/'>Go to question #{{ q.id  }} page</a>
            <hr>
         {% endfor %}
         {% if paginator is not None %}
