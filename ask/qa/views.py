@@ -14,7 +14,7 @@ def test(request, *args, **kwargs):
 @require_GET
 def new_questions(request):
     post = get_object_or_404(Post, slug=slug)
-    return render(request, 'blog/posts.html', {
+    return render(request, 'qa/posts.html', {
         'post':
          post,
     })
@@ -26,9 +26,9 @@ def post_list_all(request):
     limit = request.GET.get('limit', 10)
     page = request.GET.get('page', 1)
     paginator = Paginator(posts, limit)
-    paginator.baseurl = '/blog/all_posts/?page='
+    paginator.baseurl = '/qa/all_posts/?page='
     page = paginator.page(page) # Page
-    return render(request, 'blog/posts.html', {
+    return render(request, 'qa/posts.html', {
            'posts': page.object_list,
            'paginator': paginator, 'page': page,
            })
