@@ -17,7 +17,7 @@ from qa import views
 from django.conf.urls import url
 
 urlpatterns = [
-   url(r'^$', views.post_list_all),
+   url(r'^$', views.new_questions),
    #url(r'^(?P<page>[0-9]+)$', views.list_new_question, name='new_question'),
    url(r'^login/.*$', views.test, name='login'),
    url(r'^signup/.*', views.test, name='signup'),

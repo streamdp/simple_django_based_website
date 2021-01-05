@@ -1,0 +1,27 @@
+<html>
+    <head>
+    </head>
+    <body>
+	{% for q in questionspart %}
+	   <h1>{{ q.title }}</h1>
+           <h6>{{ q.added_at }}</h6>
+           <h6>{{ q.rating }}</h6>
+           <h6>{{ q.author }}</h6>
+           <p>{{ q.text }}</p>
+           <hr>
+        {% endfor %}
+        <nav>
+            <ul class="pagination">
+                {% for p in paginator.page_range %}
+		    {% if p == page %}
+ 		      <li class="active">
+		    {% else %}
+                      <li>
+                    {% endif %}
+                          <a href="{{ paginator.baseurl }}{{ p }}">{{ p }}</a>
+                      </li>
+                 {% endfor %}
+             </ul>
+        </nav>
+    </body>
+</html>

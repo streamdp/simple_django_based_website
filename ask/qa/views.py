@@ -1,28 +1,34 @@
-from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404                          
 from django.views.decorators.http import require_GET 
 # Create your views here.
 from django.http import HttpResponse 
 from django.core.paginator import Paginator                                     
-
+from qa.models import Question, Answer
 
 
 def test(request, *args, **kwargs):
-    return HttpResponse('OK')
+     return render(request, 'qa/posts.html')
+#    return HttpResponse('OK')
 
 
 @require_GET
 def new_questions(request):
-    post = get_object_or_404(Post, slug=slug)
-    return render(request, 'qa/posts.html', {
-        'post':
-         post,
+    questions = Question.objects.new()
+    limit = request.GET.get('limit', 10)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(questions, limit)
+    paginator.baseurl = '/?page=' 
+    page = paginator.page(page)
+    return render(request, 'qa/questions.html', {
+        'questions': questions,
+        'questionspart' : page.object_list,
+        'paginator' : paginator,
+        'page' : page,
     })
 
 
-from django.core.paginator import Paginator
 def post_list_all(request):
-    posts = Post.objects.filter(is_published=True)
+    posts = Question.objects.new(is_published=True)
     limit = request.GET.get('limit', 10)
     page = request.GET.get('page', 1)
     paginator = Paginator(posts, limit)
