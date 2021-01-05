@@ -10,7 +10,6 @@
            <p>{{ q.text }}</p>
            <hr>
         {% endfor %}
-        {% if paginator is not None %}
         <nav>
             <ul class="pagination">
                 {% for p in paginator.page_range %}
@@ -24,6 +23,5 @@
                  {% endfor %}
              </ul>
         </nav>
-       {% endif %}
     </body>
 </html>

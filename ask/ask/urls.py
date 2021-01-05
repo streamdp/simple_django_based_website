@@ -18,11 +18,10 @@ from django.conf.urls import url
 
 urlpatterns = [
    url(r'^$', views.new_questions),
-   #url(r'^(?P<page>[0-9]+)$', views.list_new_question, name='new_question'),
    url(r'^login/.*$', views.test, name='login'),
-   url(r'^signup/.*', views.test, name='signup'),
-   url(r'^question/(?P<id>[0-9]+)/$', views.test, name='question'),
+   url(r'^signup/.*$', views.test, name='signup'),
+   url(r'^question/(?P<id>[0-9]+)/$', views.get_question, name='question'),
    url(r'^ask/.*', views.test, name='ask'),
-   url(r'^popular/.*', views.test, name='popular'),
-   url(r'^new/.*', views.test, name='new'),
+   url(r'^popular/.*$', views.most_popular, name='popular'),
+   url(r'^new/.*$', views.test, name='new'),
 ]                                           
