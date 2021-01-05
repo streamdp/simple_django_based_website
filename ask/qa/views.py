@@ -20,24 +20,10 @@ def new_questions(request):
     paginator.baseurl = '/?page=' 
     page = paginator.page(page)
     return render(request, 'qa/questions.html', {
-        'questions': questions,
-        'questionspart' : page.object_list,
+        'questions' : page.object_list,
         'paginator' : paginator,
         'page' : page,
     })
-
-
-def post_list_all(request):
-    posts = Question.objects.new(is_published=True)
-    limit = request.GET.get('limit', 10)
-    page = request.GET.get('page', 1)
-    paginator = Paginator(posts, limit)
-    paginator.baseurl = '/qa/all_posts/?page='
-    page = paginator.page(page) # Page
-    return render(request, 'qa/posts.html', {
-           'posts': page.object_list,
-           'paginator': paginator, 'page': page,
-           })
 
 
 def paginate(request, qs):
