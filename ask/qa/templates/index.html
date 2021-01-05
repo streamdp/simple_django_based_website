@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}
+	{{ block.super }} – главная
+{% endblock %}
+{% block content %}
+	{% for obj in post_list %}
+		<div class="question">
+			<a href="{{ obj.build_url }}">{{ obj }}</a>
+			{{ obj.created_date|date:"d.m.Y" }}
+		</div>
+	{% endfor %}
+{% endblock %}       
