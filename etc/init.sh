@@ -9,4 +9,4 @@ sudo mkdir -p /etc/mysql/mysql.conf.d/
 sudo ln -sf /home/box/web/etc/django.cnf /etc/mysql/mysql.conf.d/
 sudo /etc/init.d/gunicorn restart
 sudo /etc/init.d/mysql start
-
+/home/box/web/etc/setup_git.sh
