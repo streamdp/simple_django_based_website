@@ -65,7 +65,7 @@ def most_popular(request):
 @require_GET
 def get_question(request, id):
     try:
-		questions = Question.objects.get(id=id)
+		questions = Question.objects.filter(id=id)
     except Question.DoesNotExist:
 		raise Http404
     return render(request, 'qa/questions.html', {
