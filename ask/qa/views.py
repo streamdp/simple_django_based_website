@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_GET 
 # Create your views here.
 from django.http import HttpResponse 
-from django.core.paginator import Paginator                                     
+from django.core.paginator import Paginator, EmptyPage                                     
 from qa.models import Question, Answer
 
 
@@ -18,7 +18,10 @@ def new_questions(request):
     page = request.GET.get('page', 1)
     paginator = Paginator(questions, limit)
     paginator.baseurl = '/?page=' 
-    page = paginator.page(page)
+    try:    
+        page = paginator.page(page)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
     return render(request, 'qa/questions.html', {
         'questions' : page.object_list,
         'paginator' : paginator,
