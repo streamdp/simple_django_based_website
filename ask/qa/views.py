@@ -65,23 +65,25 @@ def get_most_popular(request):
 def get_question(request, id):
     try:
         question = Question.objects.get(id=id)
-        form = AnswerForm()
     except Question.DoesNotExist:
         raise Http404
     answers = Answer.objects.filter(question=question.id)
-
+          
     if request.method == "POST":
         form = AnswerForm(request.POST, question)
         if form.is_valid():
             answer = form.save()
             url = question.get_url()
             return HttpResponseRedirect(url)
+    else:
+        form = AnswerForm()
 
     return render(request, 'qa/question.html', {
-            'question' : question,
-            'answers': answers,
-            'form': form
+        'question' : question,
+        'answers': answers,
+        'form': form
         })
+
 
 def add_question(request):
     if request.method == "POST":
