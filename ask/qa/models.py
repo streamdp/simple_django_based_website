@@ -5,12 +5,17 @@ from django.db import models
 
 
 class QuestionManager(models.Manager):                                          
-    def new(self):                                                                      return self.order_by('-id') 
+    def new(self):
+        return self.order_by('-id') 
 
     def popular(self):
-        return self.order_by('-rating')                                                         
+        return self.order_by('-rating')
+
 
 class Question(models.Model):
+    def get_url(self):
+        return '/question/'+str(self.id)+'/'
+        
     title = models.CharField(max_length=255)
     text = models.TextField()
     added_at = models.DateTimeField(auto_now_add=True)
