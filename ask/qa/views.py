@@ -38,6 +38,7 @@ def all_questions_view(request):
         'page' : page,
         })
 
+
 @require_GET
 def most_popular_view(request):
     questions = Question.objects.popular()

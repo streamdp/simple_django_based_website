@@ -22,6 +22,7 @@ class AskForm(forms.Form):
     text = forms.CharField(label='Text of you question',
         widget=forms.Textarea(attrs={'class':'form-control'}))
 
+
     def clean(self):
         self.cleaned_data['author_id'] = self._user.id
         title = self.cleaned_data['title'].lower()
@@ -97,4 +98,3 @@ class LoginForm(forms.Form):
         widget=forms.TextInput(attrs={'class':'form-control'}), max_length=20)
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class':'form-control'}))
-
