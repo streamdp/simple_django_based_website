@@ -1,20 +1,21 @@
 {% extends "qa/base.html" %}
 
 {% block title %}
-	{{ block.super }} – Add Question
+	{{ block.super }} – Sign up Page
 {% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-header">
-            <h1>Write your question here and someone will help you!</h1>
+            Welcome! Fill in the required fields for registration:
         </div>
-        <div class="card-body {% if not user.is_authenticated %}bg-secondary{% endif %}">
-        {% if user.is_authenticated %}                      
-            {% for e in form.non_field_errors %}
-                <div class="alert alert-danger">{{ e }}</div>
-            {% endfor %}
-            <form class="form-horizontal" method="post" action="/ask/">
+        <div class="card-body">
+        {% for e in form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ e }}
+            </div>
+        {% endfor %}
+            <form class="form-horizontal" method="post" action="/signup/">
                 {% csrf_token %}
                 <fieldset>
                 {% for field in form %}
@@ -30,9 +31,6 @@
                     <button type="submit" class="btn btn-secondary">Save</button>
                 </div>
             </form>
-        {% else %}
-            <div class="text-light d-flex justify-content-center  align-items-center mt-5 mb-5"><h3>You need to be logged in to ask questions!</h3></div>
-        {% endif %}
         </div>
     </div>
 {% endblock %}       

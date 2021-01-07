@@ -1,5 +1,6 @@
 from django import forms
 from qa.models import Question, Answer
+from django.contrib.auth.models import User
 
 WARNING_TEXT = 'Enter meaningful %(name_field)s, please! You entered duplicate letters: %(value)s'
 
@@ -22,8 +23,9 @@ class AskForm(forms.Form):
         widget=forms.Textarea(attrs={'class':'form-control'}))
 
     def clean(self):
-        title = self.cleaned_data['title']
-        text = self.cleaned_data['text']
+        self.cleaned_data['author_id'] = self._user.id
+        title = self.cleaned_data['title'].lower()
+        text = self.cleaned_data['text'].lower()
 
         if text == title:
             raise forms.ValidationError('Text in the fields must not match!')
@@ -43,26 +45,18 @@ class AskForm(forms.Form):
 
 
     def save(self):
-        self.cleaned_data['author_id'] = 2
         question = Question(**self.cleaned_data)
         question.save()
         return question
-
         
 
-class AnswerForm(forms.Form): 
-    def __init__(self, *args, **kwargs):
-        super(AnswerForm, self).__init__(*args, **kwargs)
-        if len(args)>0:
-            self._question = args[1]
-
-
+class AnswerForm(forms.Form):             
     text = forms.CharField(label='Text of you answer',
         widget=forms.Textarea(attrs={'class':'form-control'}))
     question = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     
     def clean(self):
-        text = self.cleaned_data['text']
+        text = self.cleaned_data['text'].lower()
         if not is_normal_text(text):
             raise forms.ValidationError(WARNING_TEXT, params={'value': text[:5] + '...',
                                                       'name_field': 'text'})
@@ -74,7 +68,33 @@ class AnswerForm(forms.Form):
 
     def save(self):
         self.cleaned_data['question'] = self._question
-        self.cleaned_data['author_id'] = 2
+        self.cleaned_data['author_id'] = self._user.id
         answer = Answer(**self.cleaned_data)
         answer.save()
         return answer
+
+
+class SignUpForm(forms.Form):
+    username = forms.CharField(label='Username',
+        widget=forms.TextInput(attrs={'class':'form-control'}), max_length=20)
+    email = forms.EmailField(label='Email',
+        widget=forms.EmailInput(attrs={'class':'form-control'}))
+    password = forms.CharField(label='Password',
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+
+
+    def save(self):
+        username = self.cleaned_data['username']
+        email = self.cleaned_data['email']
+        password = self.cleaned_data['password']      
+        user = User.objects.create_user(username, email, password)
+        user.save()
+        return user
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Username',
+        widget=forms.TextInput(attrs={'class':'form-control'}), max_length=20)
+    password = forms.CharField(label='Password',
+        widget=forms.PasswordInput(attrs={'class':'form-control'}))
+

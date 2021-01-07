@@ -3,7 +3,9 @@ from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse,  Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage                                    
 from qa.models import Question, Answer
-from qa.forms import AskForm, AnswerForm
+from qa.forms import AskForm, AnswerForm, SignUpForm, LoginForm
+from django.contrib.auth import login, authenticate
+from django.contrib.auth import logout
 
 
 def test(request, *args, **kwargs):
@@ -12,7 +14,7 @@ def test(request, *args, **kwargs):
 
 
 @require_GET
-def get_new_questions(request):
+def all_questions_view(request):
     questions = Question.objects.new()
     try:
         limit = int(request.GET.get('limit', 10))
@@ -34,10 +36,10 @@ def get_new_questions(request):
         'questions' : page.object_list,
         'paginator' : paginator,
         'page' : page,
-    })
+        })
 
 @require_GET
-def get_most_popular(request):
+def most_popular_view(request):
     questions = Question.objects.popular()
     try:
         limit = int(request.GET.get('limit', 10))
@@ -59,10 +61,10 @@ def get_most_popular(request):
         'questions' : page.object_list,
         'paginator' : paginator,
         'page' : page,
-    })
+        })
 
 
-def get_question(request, id):
+def one_question_view(request, id):
     try:
         question = Question.objects.get(id=id)
     except Question.DoesNotExist:
@@ -70,7 +72,9 @@ def get_question(request, id):
     answers = Answer.objects.filter(question=question.id)
           
     if request.method == "POST":
-        form = AnswerForm(request.POST, question)
+        form = AnswerForm(request.POST)
+        form._user = request.user 
+        form._question = question
         if form.is_valid():
             answer = form.save()
             url = question.get_url()
@@ -81,13 +85,14 @@ def get_question(request, id):
     return render(request, 'qa/question.html', {
         'question' : question,
         'answers': answers,
-        'form': form
+        'form': form,
         })
 
 
-def add_question(request):
+def add_question_view(request):
     if request.method == "POST":
         form = AskForm(request.POST)
+        form._user = request.user 
         if form.is_valid():
             question = form.save()
             url = question.get_url()
@@ -95,5 +100,48 @@ def add_question(request):
     else:
         form = AskForm()
     return render(request, 'qa/add_question.html', {
-        'form': form
-    })
+        'form': form,
+        })
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def login_view(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_authenticated:
+                    login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = LoginForm()
+    return render(request, 'qa/login.html', {
+        'form': form,
+        })   
+
+
+def signup_view(request):
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_authenticated:
+                    login(request, user)
+            return HttpResponseRedirect('/')
+
+    else:
+        form = SignUpForm()
+    return render(request, 'qa/signup.html', {
+        'form': form,
+        })

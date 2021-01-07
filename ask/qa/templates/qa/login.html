@@ -1,0 +1,43 @@
+{% extends "qa/base.html" %}
+
+{% block title %}
+	{{ block.super }} – Login Page
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated  %}
+        <div class="d-flex justify-content-center  align-items-center mt-5">
+            <h1>You are already logged-in!</h1>
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-header">
+                Welcome! Fill in the required fields for login:
+            </div>
+            <div class="card-body">
+            {% for e in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ e }}
+                </div>
+            {% endfor %}
+                <form class="form-horizontal" method="post" action="/login/">
+                    {% csrf_token %}
+                    <fieldset>
+                    {% for field in form %}
+                        <div class="form-group {% if field.errors %}has-error{% endif %}">
+                            <label class="control-label">{{ field.label }}</label>
+                            <div class="controls">
+                                {{ field }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </fieldset>
+                    <div class="form-actions d-flex justify-content-end">
+                        <button type="submit" class="btn btn-secondary">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>                
+    {% endif %}
+    <div class="mt-5"></div>
+{% endblock %}       
