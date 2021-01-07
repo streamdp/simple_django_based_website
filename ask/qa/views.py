@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404                          
-from django.views.decorators.http import require_GET, require_POST 
+from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponse,  Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage                                    
 from qa.models import Question, Answer
 from qa.forms import AskForm, AnswerForm, SignUpForm, LoginForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 
 def test(request, *args, **kwargs):
      return render(request, 'qa/posts.html')
@@ -89,7 +90,7 @@ def one_question_view(request, id):
         'form': form,
         })
 
-
+@login_required(redirect_field_name='next', login_url='/login/?next=/ask/')
 def add_question_view(request):
     if request.method == "POST":
         form = AskForm(request.POST)
@@ -120,7 +121,7 @@ def login_view(request):
             if user is not None:
                 if user.is_authenticated:
                     login(request, user)
-            return HttpResponseRedirect('/')
+            return redirect(request.POST.get('next','/'))
     else:
         form = LoginForm()
     return render(request, 'qa/login.html', {

@@ -35,10 +35,10 @@
             {% if user.is_authenticated %}
                 You can help by answering the question!
             {% else %}
-                You must be logged in to answer questions!
+                You must be logged in to answer questions!  <a class="text-light" href="/login/?next=/question/{{ question.id }}/">Login?</a>
             {% endif %}
         </div>
-        {% if user.is_authenticated %}                      
+        {% if user.is_authenticated %}
             <div class="card-body">
             {% for e in form.non_field_errors %}
                 <div class="alert alert-danger">
