@@ -9,11 +9,6 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 
-def test(request, *args, **kwargs):
-     return render(request, 'qa/posts.html')
-#    return HttpResponse('OK')
-
-
 @require_GET
 def all_questions_view(request):
     questions = Question.objects.new()
@@ -121,7 +116,15 @@ def login_view(request):
             if user is not None:
                 if user.is_authenticated:
                     login(request, user)
-            return redirect(request.POST.get('next','/'))
+            else:
+                form.add_error(None, "Login Failed! Enter the username and password correctly!")
+                return render(request, 'qa/login.html', {
+                    'form': form,
+                })
+            if request.POST.get('next','/').strip() != "":
+                return redirect(request.POST.get('next','/'))
+            else:
+                return HttpResponseRedirect('/')
     else:
         form = LoginForm()
     return render(request, 'qa/login.html', {
@@ -141,7 +144,6 @@ def signup_view(request):
                 if user.is_authenticated:
                     login(request, user)
             return HttpResponseRedirect('/')
-
     else:
         form = SignUpForm()
     return render(request, 'qa/signup.html', {

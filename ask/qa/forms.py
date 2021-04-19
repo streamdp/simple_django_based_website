@@ -55,7 +55,8 @@ class AnswerForm(forms.Form):
     text = forms.CharField(label='Text of you answer',
         widget=forms.Textarea(attrs={'class':'form-control'}))
     question = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-    
+
+
     def clean(self):
         text = self.cleaned_data['text'].lower()
         if not is_normal_text(text):
@@ -84,6 +85,16 @@ class SignUpForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
 
+    def clean(self):
+        username = self.cleaned_data['username']
+        email = self.cleaned_data['email']
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError(u'Username "%s" is already in use.' % username)
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError(u'Email "%s" is already in use.' % email)
+        return self.cleaned_data
+
+
     def save(self):
         username = self.cleaned_data['username']
         email = self.cleaned_data['email']
@@ -92,6 +103,11 @@ class SignUpForm(forms.Form):
         user.save()
         return user
 
+
+    def username_present(username):
+        if User.objects.filter(username=username).exists():
+            return True
+        return False
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username',

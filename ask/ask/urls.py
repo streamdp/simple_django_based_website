@@ -24,5 +24,4 @@ urlpatterns = [
    url(r'^question/(?P<id>[0-9]+)/$', views.one_question_view, name='question'),
    url(r'^ask/.*', views.add_question_view, name='ask'),
    url(r'^popular/.*$', views.most_popular_view, name='popular'),
-   url(r'^new/.*$', views.test, name='new'),
-]                                           
+]
